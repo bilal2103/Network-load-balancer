@@ -39,15 +39,15 @@ class MainMenu:  # for the functionalities of main screen...
         title_lbl2 = tk.Label(self.root, text="Semester Project", font=('Century Schoolbook', 25))
         title_lbl2.config(bg="Black", fg="White")
         title_lbl2.place(x=325, y=220)
-        grp1 = tk.Label(self.root, text="Bilal Hassan 21K-4669", font=('Century Schoolbook', 12))
-        grp2 = tk.Label(self.root, text="Aiman Imran 21K-4525", font=('Century Schoolbook', 12))
+        grp1 = tk.Label(self.root, text="Bilal Hassan   21K-4669", font=('Century Schoolbook', 13))
+        grp2 = tk.Label(self.root, text="Aiman Imran  21K-4525", font=('Century Schoolbook', 13))
         grp1.config(bg="Black", fg="White")
         grp2.config(bg="Black", fg="White")
         grp1.place(x=650, y=610)
         grp2.place(x=650, y=640)
         ch_btn = tk.Button(self.root, text="Initialize Load Balancer", font=('Century Gothic', 18),
                            command=self.get_input)
-        ch_btn.place(x=230, y=350)
+        ch_btn.place(x=300, y=350)
         self.root.mainloop()
 
     def get_input(self):
@@ -66,7 +66,7 @@ class MainMenu:  # for the functionalities of main screen...
         tb2.place(x=300, y=133)
         button = tk.Button(self.root, text="Next", font=('Century Gothic', 18),
                            command=lambda: self.simulation(tb1.get(), tb2.get()))
-        button.place(x=100, y=200)
+        button.place(x=30, y=200)
 
     def simulation(self, n, m):
         self.root.destroy()
@@ -448,7 +448,7 @@ class Simulate:
     def __init__(self, n, m):
         self.root = tk.Tk()
         self.result_var = tk.BooleanVar(self.root)
-        self.simulation_speed = 100  # Change this so that program runs faster/slower.
+        self.simulation_speed = 1000  # Change this so that program runs faster/slower.
         self.screenwidth = 1500
         self.screenheight = 1000
         self.colors = [
@@ -540,6 +540,7 @@ class Simulate:
         if self.lb:
             self.lb.on_closing()
         self.root.destroy()
+        MainMenu()
 
     def proceed(self):
         self.result_var.set(True)
@@ -639,7 +640,13 @@ class Simulate:
 
     def get_capacities(self, canvas, flag=False):
         offset = (0, 0)
-        starting_location = (850, 70)
+        starting_location = (850, 60)
+        label = ttk.Label(self.root)
+        label.place(x=920,y=20)
+        if flag:
+            label.config(text="Capacity,Bandwidth")
+        else:
+            label.config(text="Capacity")
         tbs = []
         for i in range(self.n):
             combo = tk.Entry(self.root)
@@ -947,9 +954,7 @@ class Simulate:
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         if option == "dynamic round robin":
             self.get_capacities(canvas)
-
             self.lb.RoundRobin()
-
             self.RunDynamicRoundRobin(canvas)
         elif option == "least connections":
             self.lb.Random("s")
@@ -960,7 +965,6 @@ class Simulate:
             self.RunStaticRoundRobin(canvas)
         elif option == "weighted least connections":
             self.get_capacities(canvas)
-
             self.lb.Random("d")
             self.LeastConnections(canvas)
         elif option == "ContentAware":
