@@ -448,7 +448,7 @@ class Simulate:
     def __init__(self, n, m):
         self.root = tk.Tk()
         self.result_var = tk.BooleanVar(self.root)
-        self.simulation_speed = 1000  # Change this so that program runs faster/slower.
+        self.simulation_speed =  100 # Change this so that program runs faster/slower.
         self.screenwidth = 1500
         self.screenheight = 1000
         self.colors = [
