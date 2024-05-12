@@ -448,7 +448,7 @@ class Simulate:
     def __init__(self, n, m):
         self.root = tk.Tk()
         self.result_var = tk.BooleanVar(self.root)
-        self.simulation_speed =  100 # Change this so that program runs faster/slower.
+        self.simulation_speed =1000 # Change this so that program runs faster/slower.
         self.screenwidth = 1500
         self.screenheight = 1000
         self.colors = [
@@ -481,7 +481,10 @@ class Simulate:
         self.serverImages = []
         self.serverLabels = []
         self.DisplayMenu()
-
+    def accelerate(self):
+        self.simulation_speed -= 250
+    def brake(self):
+        self.simulation_speed += 250
     def DisplayMenu(self):
         self.root.deiconify()
         self.root.geometry(f"{self.screenwidth}x{self.screenheight}")
@@ -600,7 +603,14 @@ class Simulate:
 
         label = ttk.Label(canvas, text="", wraplength=250, justify="left")
         label.place(x=1150, y=30)
-
+        ff_img = tk.PhotoImage(file='fast-forward.png')
+        slow_img = tk.PhotoImage(file='fast-rewind.png')
+        ff_img = resize_image(ff_img, 30, 30)
+        slow_img = resize_image(slow_img, 30, 30)
+        ff_btn = tk.Button(self.root, image=ff_img, command=self.accelerate)
+        slow_btn = tk.Button(self.root, image=slow_img, command=self.brake)
+        ff_btn.place(x=1150, y=700)
+        slow_btn.place(x=1100, y=700)
         i = 0
         for key, value in self.lb.events.items():
 
@@ -690,7 +700,14 @@ class Simulate:
         i = 0
         pattern = r'client(\d+)Timeout'
         pattern2 = r'NothingHappened(\d+)'
-
+        ff_img = tk.PhotoImage(file='fast-forward.png')
+        slow_img = tk.PhotoImage(file='fast-rewind.png')
+        ff_img = resize_image(ff_img, 30, 30)
+        slow_img = resize_image(slow_img, 30,30)
+        ff_btn = tk.Button(self.root, image=ff_img, command=self.accelerate)
+        slow_btn = tk.Button(self.root, image=slow_img, command=self.brake)
+        ff_btn.place(x=1150,y=700)
+        slow_btn.place(x=1100,y=700)
         for key, value in self.lb.events.items():
             match = re.match(pattern, key)
             match2 = re.match(pattern2, key)
@@ -750,6 +767,14 @@ class Simulate:
         i = 0
         label = ttk.Label(canvas, text="", wraplength=250, justify="left")
         label.place(x=1150, y=30)
+        ff_img = tk.PhotoImage(file='fast-forward.png')
+        slow_img = tk.PhotoImage(file='fast-rewind.png')
+        ff_img = resize_image(ff_img, 30, 30)
+        slow_img = resize_image(slow_img, 30, 30)
+        ff_btn = tk.Button(self.root, image=ff_img, command=self.accelerate)
+        slow_btn = tk.Button(self.root, image=slow_img, command=self.brake)
+        ff_btn.place(x=1150, y=700)
+        slow_btn.place(x=1100, y=700)
         capacities = [capacity for capacity in self.lb.capacities]
         window_label = tk.Label(self.root, text="Randomly assigning clients", font=("Helvetica", 15))
         canvas.create_window(500, 10, window=window_label)
@@ -841,6 +866,7 @@ class Simulate:
         key = f"client{int(tb1.get()) - 1}"
         hashed_server, port = self.lb.ip_hashes[key]
         aline = self.MapHashedClient(key, hashed_server, port, canvas)
+        print("Hash found in the NLB, mapping client request to server ", hashed_server)
         self.result_var.set(False)
         self.root.after(500, self.proceed)
         self.root.wait_variable(self.result_var)
@@ -861,6 +887,14 @@ class Simulate:
         for i in range(self.m):
             label = ttk.Label(self.root,text=requests[i])
             label.place(x=self.coordinates[f"client{i}"][0] + 20, y=self.coordinates[f"client{i}"][1]-10)
+        ff_img = tk.PhotoImage(file='fast-forward.png')
+        slow_img = tk.PhotoImage(file='fast-rewind.png')
+        ff_img = resize_image(ff_img, 30, 30)
+        slow_img = resize_image(slow_img, 30, 30)
+        ff_btn = tk.Button(self.root, image=ff_img, command=self.accelerate)
+        slow_btn = tk.Button(self.root, image=slow_img, command=self.brake)
+        ff_btn.place(x=1200, y=700)
+        slow_btn.place(x=1150, y=700)
         curr = (800, 120)
         curr_servers = (930, 50)
         client_info = {}
@@ -940,9 +974,6 @@ class Simulate:
                         command=lambda: self.ContentAware(canvas, tbs))
         canvas.create_window(1450,30,window=btn)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-    def RunLeastBandwidth(self, canvas):
-        pass
 
     def Run(self, option):
         canvas = self.initialize_canvas()
